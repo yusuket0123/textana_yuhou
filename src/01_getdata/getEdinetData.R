@@ -17,7 +17,7 @@ source("src/01_getdata/getLabels.R")
 source("src/01_getdata/tidyup.R")
 
 ### creating a folder to preserve data extracted from edinet
-date_filing = "2019-06-28"
+date_filing = "2023-11-21" # GETメソッドの出力のsubmitDateTimeを指定 ★ここを365日分回す必要？
 path_filing = make_path_filing(date_filing)
 path_label = str_c("data/label")
 path_tidyup = str_c(path_filing, "/tidyup")
@@ -40,7 +40,7 @@ get_zip_via_EDINET(data_tidy, docID, path_zip,
                    start = 1L, end = length(docID))
 
 ### get data of labels in financial reports
-year <- 2019
+year <- 2023
 path_zipdata <- dir(path_zip, pattern = ".zip", full.names = TRUE)
 get_label(path_zipdata, year)
 

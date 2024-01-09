@@ -20,7 +20,9 @@ get_label <- function(path_zipdata, year){
                    pattern = "\\.xbrl", 
                    full.names = T) %>% 
     str_subset("ifrs", negate = TRUE)
-  
+  path_xbrl = path_xbrl[stringi::stri_detect_regex(path_xbrl, "jpcrp030000")] # 企業内容等の開示に関する内閣府令 第三号様式 有価証券報告書  (jpcrp030000-asr)
+  # https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fwww.fsa.go.jp%2Fsearch%2F20211109%2F1e_ElementList.xlsx&wdOrigin=BROWSELINK
+
   parsed <- xbrlParse(path_xbrl)
   
   schema <- xbrlGetSchemaName(parsed)
@@ -37,23 +39,25 @@ get_label <- function(path_zipdata, year){
   
   xbrlFree(parsed_Sch)
   
-  linkbase %>%
-    str_subset(pattern = "jppfs") %>%
-    str_subset(pattern = "lab.xml") %>%
+  linkbase = linkbase %>%
+    str_subset(pattern = "jpcrp030000") %>%　#★jpcrp
+    str_subset(pattern = "pre.xml") 
+  setwd(path_pubdoc)
+  linkbase %>% 
     read_xml() %>%
-    write_xml(file = str_c("Data/label/jppfs_label_", year, ".xml"))
+    write_xml(file = str_c("../../../../../label/jpcrp_label_", year, ".xml"))
+  setwd("../../../../../../")
   
-  path_label <- dir("data/label", as.character(year), full.names = TRUE) %>%
-    str_subset("jppfs") # jgaapとかも入ってくる可能性あるのでjppfs（日本会計基準に順序）を指定
+  path_label <- dir("data/label", as.character(year), full.names = TRUE) %>% str_subset(., "xml")
+  path_label = path_label[stringi::stri_detect_regex(path_label, "jpcrp")]
   
   parsed_label <- xbrlParse(path_label)
   
   labels <- xbrlProcessLabels(parsed_label)
-  
+  temp = xbrlProcessContexts(path_label)
   xbrlFree(parsed_label)
-  
   ##
-  
+  read_xml(path_label)
   labels %>%
     as_tibble() %>%
     mutate_at("labelString", str_conv, encoding = "UTF-8") %>%

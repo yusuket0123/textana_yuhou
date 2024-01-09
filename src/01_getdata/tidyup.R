@@ -59,7 +59,7 @@ tidyup_data <- function(path_zipdata, path_label, path_tidyup, start, end){
     
     if(ac_standard == "Japan GAAP"){
       
-      joined_fcl <- join_fcl(joined_fact, joined_context, label)
+      joined_fcl <- join_fcl(joined_fact, joined_context, label) # func. is defined in "defineFuncExtractData.R"
       
       ## consolidated financial statement or NOT
       if(is_consolidated(joined_fcl)){
@@ -143,3 +143,12 @@ tidyup_data <- function(path_zipdata, path_label, path_tidyup, start, end){
   }
   
 }
+
+debug = function(){
+  ### temp
+  unzip(zipfile = zipfile,
+        exdir = path_zip)
+  temp = read_xml(path_xbrl)
+  xml_find_all(temp, xpath = '//jppfs_cor:CallLoansCAFND[@contextRef = "CurrentYearInstant_NonConsolidatedMember"]') %>% xml_text()
+  xml_find_all(temp, xpath = '//jpcrp_cor:ManagementAnalysisOfFinancialPositionOperatingResultsAndCashFlowsTextBlock') %>% xml_text()
+  }

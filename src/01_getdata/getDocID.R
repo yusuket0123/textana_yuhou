@@ -17,7 +17,7 @@ get_json = function(date_filing, path_filing) {
   
   key = "&Subscription-Key=eb10a3c6b0a649a4b86980603cd8687e" # subscription key
   
-  get_res = httpGET(str_c(url_api, date_filing, url_type, key)) ### get response
+  get_res = httpGET(str_c(url_api, date_filing, url_type, key)) ### get response　# GETメソッドの出力のsubmitDateTimeを指定
   
   data_raw = fromJSON(get_res) # transform json data into list
   
@@ -27,7 +27,7 @@ get_json = function(date_filing, path_filing) {
     purrr::pluck("resultset") %>% 
     purrr::pluck("count")
   
-  if(data_flag == 0){
+  if(is.null(data_flag) == TRUE){
     stop(str_c("Maybe ", date_filing, " is holiday!!"))
   }
   
